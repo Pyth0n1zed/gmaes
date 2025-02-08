@@ -1,42 +1,51 @@
 <?php
-// Set CORS headers
-header("Access-Control-Allow-Origin: *");  // Allow all origins (you can replace '*' with your domain for more security)
+// Set CORS headers to allow cross-origin requests
+header("Access-Control-Allow-Origin: *"); // For production, replace '*' with your GitHub Pages domain if possible.
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// Handle preflight (OPTIONS request)
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);  // Preflight successful
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
     exit;
 }
 
-// Handle the POST request
-if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+// Ensure that only POST requests are processed
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("HTTP/1.1 405 Method Not Allowed");
-    echo json_encode(['error' => 'Method Not Allowed. Use POST']);
+    echo json_encode(["error" => "Method Not Allowed. Use POST."]);
     exit;
 }
 
-// Read the POST data
-$data = json_decode(file_get_contents('php://input'), true);
+// Read and decode the JSON data from the request body
+$rawData = file_get_contents('php://input');
+$data = json_decode($rawData, true);
 
-// Check if the product code is provided
-if (isset($data['code'])) {
-    $code = $data['code'];  // Get the product code
-
-    // URL to your validation PHP script on InfinityFree
-    $validationUrl = 'https://your-infinityfree-site.com/validate_code.php';
-    
-    // Send the request using cURL
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $validationUrl . '?code=' . urlencode($code));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    curl_close($ch);
-
-    // Return the response
-    echo $response;
-} else {
-    echo json_encode(['error' => 'No product code provided']);
+// Verify that the product code was sent
+if (!isset($data['code'])) {
+    echo json_encode(["error" => "No product code provided"]);
+    exit;
 }
+
+$code = $data['code'];
+
+// Construct the URL to your validation script. 
+// Replace the URL below with the correct path to your validation PHP script.
+$validationUrl = 'https://your-infinityfree-site.com/validate_code.php?code=' . urlencode($code);
+
+// Use cURL to fetch the response from the validation script
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $validationUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+$curlError = curl_error($ch);
+curl_close($ch);
+
+if ($response === false) {
+    echo json_encode(["error" => "Error fetching validation data: " . $curlError]);
+    exit;
+}
+
+// Output the response from the validation script (assumed to be JSON)
+echo $response;
 ?>

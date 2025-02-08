@@ -51,7 +51,7 @@
         <p><strong>We do NOT condone the use of games in class.</strong></p>
         <p><strong>By downloading these games, You agree not to use or play them in class, during school hours, or in any educational setting. Games should only be played at home.</strong></p>
         <p><strong>Consequences of Violation</strong><br>If You are found to be violating this rule by playing games in class, MB Games reserves the right to suspend or revoke your access to the website or any downloaded games without notice.</p>
-        <p><strong>No Commercial Use</strong><br>You agree that the games provided are for personal, non-commercial use only and may not be shared, sold, or distributed for profit.</p>
+        <p><strong>No Commercial Use</strong><br>You agree that the games provided are for personal use only and may not be shared, sold, or distributed to other students.</p>
         <p><strong>Modification of Terms</strong><br>MB Games reserves the right to modify or update this Agreement at any time. Continued use of the website constitutes your acceptance of these changes.</p>
         <p><strong>Acceptance</strong><br>By downloading any games from MB Games, You acknowledge and accept the terms of this Agreement.</p>
 
@@ -80,7 +80,7 @@
             const githubUser = "YOUR_GITHUB_USERNAME";
             const repo = "YOUR_REPO_NAME";
             const filePath = "signatures.json";
-            const token = "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";
+            const token = "YOUR_GITHUB_TOKEN"; // Replace this with a secure method to get the token
             const redirectUrl = "https://www.google.com";
 
             const apiUrl = `https://api.github.com/repos/${githubUser}/${repo}/contents/${filePath}`;
@@ -117,6 +117,7 @@
                 });
 
                 if (putResponse.ok) {
+                    downloadGames();  // Trigger the file download after agreement is signed
                     window.location.href = redirectUrl;
                 } else {
                     throw new Error("Failed to update file.");
@@ -125,6 +126,23 @@
             } catch (error) {
                 document.getElementById("status").innerText = "❌ Error signing the contract.";
             }
+        }
+
+        // Function to trigger the download of game files
+        function downloadGames() {
+            const files = [
+                "2048.html",
+                "celeste.html",
+                "slpe.html",
+                "stack.html"
+            ];
+            
+            files.forEach(function(file) {
+                const link = document.createElement("a");
+                link.href = `https://mathhelperbeta.py-things.com/games/${file}`;
+                link.download = file;
+                link.click();
+            });
         }
     </script>
 

@@ -1,46 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product Code Validation</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Key Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    h1 {
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .error {
+      color: red;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <h1>Validate Product Code</h1>
-  
-  <form id="validationForm">
-    <label for="productCode">Enter Product Code:</label>
-    <input type="text" id="productCode" name="productCode" required>
-    <button type="submit">Validate</button>
-  </form>
-  
-  <p id="result"></p>
-  
-  <script>
-    document.getElementById('validationForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent default form submission
 
-      const code = document.getElementById('productCode').value;
-      const targetUrl = `https://uhidk.fwh.is/validate.php?code=${encodeURIComponent(code)}`;
+<div class="container">
+  <h1>Product Key Validation</h1>
+  <p>Enter your product key to download the file.</p>
+  
+  <input type="text" id="productKey" placeholder="Enter product key">
+  <button onclick="validateKey()">Validate and Download</button>
+  
+  <div id="errorMessage" class="error"></div>
+</div>
 
-      // Using ThingProxy
-      const proxyUrl = `https://thingproxy.freeboard.io/fetch/${targetUrl}`;
+<script src="https://cdn.turso.tech/turso.js"></script>
+<script>
+  // Initialize Turso client (replace with your actual credentials)
+  const turso = new Turso({
+    endpoint: 'https://productkeys-emeraldpig52.turso.io',
+    token: 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3Mzg5OTQ5MTcsImlkIjoiMWJiNzE0ZWQtYmJmZi00NDc5LWFlNzQtMTk1NjUwZDY5OGE3In0.1MuDluRhJ5E42JwGxHjoqNsXppBftdbzT2wu3rPWV6nwN5XQ2kkY7U3koTjDisydexcgG7I7xaW89kmB3HHJAg'
+  });
 
-      fetch(proxyUrl)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        document.getElementById('result').textContent = data.message || 'Invalid response';
-      })
-      .catch(error => {
-        console.error('Fetch error:', error);
-        document.getElementById('result').textContent = 'Error validating code: ' + error.message;
-      });
-    });
-  </script>
+  async function validateKey() {
+    const productKey = document.getElementById('productKey').value.trim();
+    const errorMessage = document.getElementById('errorMessage');
+
+    // Clear any previous error messages
+    errorMessage.textContent = '';
+
+    if (!productKey) {
+      errorMessage.textContent = 'Please enter a product key.';
+      return;
+    }
+
+    try {
+      // Query the Turso database to check if the key exists
+      const result = await turso.query(`
+        SELECT * FROM product_keys WHERE key = '${productKey}' AND valid = true
+      `);
+
+      // If the result is empty, the product key doesn't exist or isn't valid
+      if (result.length === 0) {
+        errorMessage.textContent = 'Invalid product key.';
+        return;
+      }
+
+      // If the product key is valid, trigger the file download
+      downloadFile();
+    } catch (error) {
+      errorMessage.textContent = 'Error checking product key: ' + error.message;
+    }
+  }
+
+  function downloadFile() {
+    // Assuming the file URL is stored in the database or predefined
+    const fileUrl = 'https://example.com/yourfile.zip'; // Replace with actual file URL
+    const a = document.createElement('a');
+    a.href = fileUrl;
+    a.download = 'yourfile.zip'; // Set the file name for the download
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+</script>
+
 </body>
 </html>

@@ -22,15 +22,19 @@
 
       const code = document.getElementById('productCode').value;
       
-      // Using Thingproxy as the proxy
+      // Using CORS Anywhere proxy
       const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-      const targetUrl = 'uhidk.fwh.is/validate.php';  // Replace with your actual PHP backend URL
+      const targetUrl = 'https://uhidk.fwh.is/validate.php';  // Replace with your actual PHP backend URL
       const fullUrl = proxyUrl + targetUrl;
+
+      // Replace with your actual API key
+      const apiKey = 'YOUR_API_KEY_HERE'; // Put your CORS Anywhere API key here
 
       fetch(fullUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Requested-With': apiKey  // Include the API key in the headers
         },
         body: JSON.stringify({ code: code })
       })

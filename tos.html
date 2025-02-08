@@ -1,173 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MB Games Agreement</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1e1e2e;
-            color: #cdd6f4;
-            text-align: center;
-            padding: 50px;
-        }
-        .contract-box {
-            background: #313244;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            margin: auto;
-            text-align: left;
-        }
-        input[type="text"], input[type="checkbox"] {
-            margin-top: 10px;
-        }
-        button {
-            background-color: #89b4fa;
-            color: #1e1e2e;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        button:disabled {
-            background-color: #6272a4;
-            cursor: not-allowed;
-        }
-        button:hover:not(:disabled) {
-            background-color: #74c7ec;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MB Games Agreement</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e2e;
+      color: #cdd6f4;
+      text-align: center;
+      padding: 50px;
+    }
+    .contract-box {
+      background: #313244;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      margin: auto;
+      text-align: left;
+    }
+    input[type="text"],
+    input[type="checkbox"] {
+      margin-top: 10px;
+    }
+    button {
+      background-color: #89b4fa;
+      color: #1e1e2e;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    button:disabled {
+      background-color: #6272a4;
+      cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
+      background-color: #74c7ec;
+    }
+  </style>
 </head>
 <body>
+  <div class="contract-box">
+    <h2>MB Games Agreement</h2>
+    <p>
+      <strong>Use of Games</strong><br />
+      The games provided by MB Games are intended for personal entertainment and enjoyment. You may download and use the games on your personal devices.
+    </p>
+    <p>
+      <strong>We do NOT condone the use of games in class.</strong>
+    </p>
+    <p>
+      <strong>By downloading these games, You agree not to use or play them in class, during school hours, or in any educational setting. Games should only be played at home.</strong>
+    </p>
+    <p>
+      <strong>Consequences of Violation</strong><br />
+      If You are found to be violating this rule by playing games in class, MB Games reserves the right to suspend or revoke your access to the website or any downloaded games without notice.
+    </p>
+    <p>
+      <strong>No Commercial Use</strong><br />
+      You agree that the games provided are for personal, non-commercial use only and may not be shared, sold, or distributed for profit.
+    </p>
+    <p>
+      <strong>Modification of Terms</strong><br />
+      MB Games reserves the right to modify or update this Agreement at any time. Continued use of the website constitutes your acceptance of these changes.
+    </p>
+    <p>
+      <strong>Acceptance</strong><br />
+      By downloading any games from MB Games, You acknowledge and accept the terms of this Agreement.
+    </p>
 
-    <div class="contract-box">
-        <h2>MB Games Agreement</h2>
-        <p><strong>Use of Games</strong><br>The games provided by MB Games are intended for personal entertainment and enjoyment. You may download and use the games on your personal devices.</p>
-        <p><strong>We do NOT condone the use of games in class.</strong></p>
-        <p><strong>By downloading these games, You agree not to use or play them in class, during school hours, or in any educational setting. Games should only be played at home.</strong></p>
-        <p><strong>Consequences of Violation</strong><br>If You are found to be violating this rule by playing games in class, MB Games reserves the right to suspend or revoke your access to the website or any downloaded games without notice.</p>
-        <p><strong>No Commercial Use</strong><br>You agree that the games provided are for personal, non-commercial use only and may not be shared, sold, or distributed for profit.</p>
-        <p><strong>Modification of Terms</strong><br>MB Games reserves the right to modify or update this Agreement at any time. Continued use of the website constitutes your acceptance of these changes.</p>
-        <p><strong>Acceptance</strong><br>By downloading any games from MB Games, You acknowledge and accept the terms of this Agreement.</p>
+    <label>
+      <input type="checkbox" id="agreeCheckbox" />
+      I agree to the terms above.
+    </label>
+    <br />
+    <input type="text" id="username" placeholder="Enter your name" />
+    <br />
+    <button id="submitBtn" onclick="signContract()" disabled>Sign Agreement</button>
+    <p id="status"></p>
+  </div>
 
-        <label>
-            <input type="checkbox" id="agreeCheckbox"> I agree to the terms above.
-        </label>
-        <br>
-        <input type="text" id="username" placeholder="Enter your name">
-        <br>
-        <button id="submitBtn" onclick="signContract()" disabled>Sign Agreement</button>
-        <p id="status"></p>
-    </div>
+  <script>
+    // Enable/Disable Submit Button based on Agreement Checkbox
+    document.getElementById("agreeCheckbox").addEventListener("change", function () {
+      document.getElementById("submitBtn").disabled = !this.checked;
+    });
 
-    <script>
-        // Enable/Disable Submit Button based on Agreement Checkbox
-        document.getElementById("agreeCheckbox").addEventListener("change", function() {
-            document.getElementById("submitBtn").disabled = !this.checked;
+    async function signContract() {
+      const username = document.getElementById("username").value.trim();
+      if (!username) {
+        document.getElementById("status").innerText = "❌ Please enter your name.";
+        return;
+      }
+
+      const githubUser = "pyth0n1zed";
+      const repo = "pyth0n1zed.github.io";
+      const filePath = "signatures.json";
+      const token =
+        "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"; // Your GitHub Token
+      const redirectUrl = "https://www.google.com";
+
+      const apiUrl = `https://api.github.com/repos/${githubUser}/${repo}/contents/${filePath}`;
+
+      try {
+        // Fetch current signatures
+        const response = await fetch(apiUrl, {
+          headers: { Authorization: token }
         });
 
-        async function signContract() {
-            const username = document.getElementById("username").value.trim();
-            if (!username) {
-                document.getElementById("status").innerText = "❌ Please enter your name.";
-                return;
-            }
-
-            const githubUser = "pyth0n1zed";
-            const repo = "pyth0n1zed.github.io";
-            const filePath = "signatures.json";
-            const token = "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"; // Your GitHub Token
-            const redirectUrl = "https://www.google.com";
-
-            const apiUrl = `https://api.github.com/repos/pyth0n1zed/pyth0n1zed.github.io/contents/signatures.json`;
-
-            try {
-                // Fetch current signatures
-                const response = await fetch(apiUrl, {
-                    headers: { Authorization: `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` }
-                });
-
-                if (!response.ok) {
-                    const errorDetails = await response.json();
-                    console.error('Error response from GitHub:', errorDetails);
-                    document.getElementById("status").innerText = "❌ Failed to fetch existing signatures.";
-                    return;
-                }
-
-                let existingData = [];
-                let sha = null;
-
-                const data = await response.json();
-                if (data.content) {
-                    try {
-                        existingData = JSON.parse(atob(data.content)); // decode the base64 content
-                    } catch (error) {
-                        console.error("Error parsing existing data:", error);
-                        document.getElementById("status").innerText = "❌ Failed to parse existing signatures.";
-                        return;
-                    }
-                } else {
-                    // In case the content is missing or empty, initialize it as an empty array
-                    existingData = [];
-                }
-                sha = data.sha;
-
-                // Add new signature
-                existingData.push({ name: username, timestamp: new Date().toISOString() });
-
-                const updateData = {
-                    message: "New signature added",
-                    content: btoa(JSON.stringify(existingData, null, 2)),
-                    sha: sha
-                };
-
-                // Update the signatures file
-                const putResponse = await fetch(apiUrl, {
-                    method: "PUT",  // Change from GET to PUT for updating content
-                    headers: {
-                        Authorization: `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`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(updateData)
-                });
-
-                if (putResponse.ok) {
-                    downloadGames();  // Trigger the file download after agreement is signed
-                    window.location.href = redirectUrl;
-                } else {
-                    const putError = await putResponse.json();
-                    console.error('Error updating file:', putError);
-                    document.getElementById("status").innerText = "❌ Error signing the contract.";
-                }
-
-            } catch (error) {
-                console.error(error);
-                document.getElementById("status").innerText = "❌ Error signing the contract.";
-            }
+        if (!response.ok) {
+          const errorDetails = await response.json();
+          console.error("Error response from GitHub:", errorDetails);
+          document.getElementById("status").innerText = "❌ Failed to fetch existing signatures.";
+          return;
         }
 
-        // Function to trigger the download of game files
-        function downloadGames() {
-            const files = [
-                "2048.html",
-                "celeste.html",
-                "slpe.html",
-                "stack.html"
-            ];
-            
-            files.forEach(function(file) {
-                const link = document.createElement("a");
-                link.href = `https://mathhelperbeta.py-things.com/games/${file}`;
-                link.download = file;
-                link.click();
-            });
-        }
-    </script>
+        let existingData = [];
+        let sha = null;
 
+        const data = await response.json();
+        // Check if content exists and is not empty
+        if (data.content && data.content.trim() !== "") {
+          try {
+            // Decode base64 content and parse it as JSON
+            existingData = JSON.parse(atob(data.content));
+          } catch (error) {
+            console.error("Error parsing existing data:", error);
+            document.getElementById("status").innerText = "❌ Failed to parse existing signatures.";
+            return;
+          }
+        } else {
+          // If content is empty or doesn't exist, initialize as an empty array
+          existingData = [];
+        }
+
+        sha = data.sha;
+
+        // Add new signature
+        existingData.push({ name: username, timestamp: new Date().toISOString() });
+
+        const updateData = {
+          message: "New signature added",
+          content: btoa(JSON.stringify(existingData, null, 2)),
+          sha: sha
+        };
+
+        // Update the signatures file using PUT
+        const putResponse = await fetch(apiUrl, {
+          method: "PUT",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(updateData)
+        });
+
+        if (putResponse.ok) {
+          downloadGames(); // Trigger the file download after agreement is signed
+          window.location.href = redirectUrl;
+        } else {
+          const putError = await putResponse.json();
+          console.error("Error updating file:", putError);
+          document.getElementById("status").innerText = "❌ Error signing the contract.";
+        }
+      } catch (error) {
+        console.error(error);
+        document.getElementById("status").innerText = "❌ Error signing the contract.";
+      }
+    }
+
+    // Function to trigger the download of game files
+    function downloadGames() {
+      const files = [
+        "2048.html",
+        "celeste.html",
+        "slpe.html",
+        "stack.html"
+      ];
+      files.forEach(function (file) {
+        const link = document.createElement("a");
+        link.href = `https://mathhelperbeta.py-things.com/games/${file}`;
+        link.download = file;
+        link.click();
+      });
+    }
+  </script>
 </body>
 </html>

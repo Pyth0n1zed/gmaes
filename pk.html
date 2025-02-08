@@ -23,9 +23,9 @@
       const code = document.getElementById('productCode').value;
       
       // Using Thingproxy as the proxy
-      const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
+      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
       const targetUrl = 'https://uhidk.fwh.is/validate.php';  // Replace with your actual PHP backend URL
-      const fullUrl = proxyUrl + encodeURIComponent(targetUrl);
+      const fullUrl = proxyUrl + targetUrl;
 
       fetch(fullUrl, {
         method: 'POST',

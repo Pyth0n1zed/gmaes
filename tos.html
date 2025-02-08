@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MB Games Agreement</title>
   <style>
     body {
@@ -21,8 +21,7 @@
       margin: auto;
       text-align: left;
     }
-    input[type="text"],
-    input[type="checkbox"] {
+    input[type="text"], input[type="checkbox"] {
       margin-top: 10px;
     }
     button {
@@ -47,49 +46,21 @@
 <body>
   <div class="contract-box">
     <h2>MB Games Agreement</h2>
-    <p>
-      <strong>Use of Games</strong><br />
-      The games provided by MB Games are intended for personal entertainment and enjoyment.
-      You may download and use the games on your personal devices.
-    </p>
-    <p>
-      <strong>We do NOT condone the use of games in class.</strong>
-    </p>
-    <p>
-      <strong>By downloading these games, you agree not to use or play them in class, during school hours, or in any educational setting.
-      Games should only be played at home.</strong>
-    </p>
-    <p>
-      <strong>Consequences of Violation</strong><br />
-      If you are found to be violating this rule by playing games in class, MB Games reserves the right to suspend or revoke your access to the website or any downloaded games without notice.
-    </p>
-    <p>
-      <strong>No Commercial Use</strong><br />
-      You agree that the games provided are for personal, non-commercial use only and may not be shared, sold, or distributed for profit.
-    </p>
-    <p>
-      <strong>Modification of Terms</strong><br />
-      MB Games reserves the right to modify or update this Agreement at any time.
-      Continued use of the website constitutes your acceptance of these changes.
-    </p>
-    <p>
-      <strong>Acceptance</strong><br />
-      By downloading any games from MB Games, you acknowledge and accept the terms of this Agreement.
-    </p>
+    <p><strong>Use of Games</strong><br>By downloading MB Games, you agree not to play them in class.</p>
+    
     <label>
-      <input type="checkbox" id="agreeCheckbox" />
+      <input type="checkbox" id="agreeCheckbox">
       I agree to the terms above.
     </label>
-    <br />
-    <input type="text" id="username" placeholder="Enter your name" />
-    <br />
+    <br>
+    <input type="text" id="username" placeholder="Enter your name">
+    <br>
     <button id="submitBtn" onclick="signContract()" disabled>Sign Agreement</button>
     <p id="status"></p>
   </div>
 
   <script>
-    // Enable/disable the submit button based on the checkbox
-    document.getElementById("agreeCheckbox").addEventListener("change", function() {
+    document.getElementById("agreeCheckbox").addEventListener("change", function () {
       document.getElementById("submitBtn").disabled = !this.checked;
     });
 
@@ -100,43 +71,28 @@
         return;
       }
 
-      // Replace these placeholders with your actual data:
-      const token = "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";         // Your GitHub Personal Access Token
-      const repoOwner = "pyth0n1zed";            // Your GitHub username
-      const repoName = "pyth0n1zed.github.io";                 // Repository where your GitHub Pages are hosted
-      const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/dispatches`;
-
-      // The payload that the GitHub Action will receive
-      const payload = {
-        event_type: "add-signature",  // The custom event your GitHub Action listens for
-        client_payload: {
-          username: username
-        }
-      };
+      const cloudflareWorkerUrl = "https://add-signature.brooksweb1.workers.dev";  // Replace with your actual Worker URL
 
       try {
-        const response = await fetch(apiUrl, {
+        const response = await fetch(cloudflareWorkerUrl, {
           method: "POST",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Accept": "application/vnd.github.v3+json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username })
         });
 
+        const result = await response.json();
+
         if (response.ok) {
-          document.getElementById("status").innerText = "✅ Successfully signed the contract!";
-          // Redirect if desired:
-          window.location.href = "https://www.google.com";
+          document.getElementById("status").innerText = "✅ Agreement signed!";
+          setTimeout(() => {
+            window.location.href = "https://www.google.com"; // Redirect after signing
+          }, 2000);
         } else {
-          const error = await response.json();
-          document.getElementById("status").innerText = "❌ Error triggering action.";
-          console.error("Error response from GitHub:", error);
+          document.getElementById("status").innerText = `❌ ${result.message}`;
         }
       } catch (error) {
         console.error("Error:", error);
-        document.getElementById("status").innerText = "❌ Error triggering action.";
+        document.getElementById("status").innerText = "❌ Error signing the contract.";
       }
     }
   </script>

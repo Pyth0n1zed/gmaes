@@ -43,18 +43,43 @@
       color: red;
       text-align: center;
     }
+    .tos {
+      margin-top: 20px;
+    }
+    .tos p {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <h1>Product Key Validation</h1>
-  <p>Enter your product key to download the file.</p>
+  <p>Enter your product key to download the game.</p>
   
   <input type="text" id="productKey" placeholder="Enter product key">
   <button onclick="validateKey()">Validate and Download</button>
   
   <div id="errorMessage" class="error"></div>
+
+  <!-- Terms of Service Section -->
+  <div class="tos">
+    <p>
+      By downloading these games, you agree to the following terms:
+      <br>
+      <strong>Use of Games:</strong> The games provided are for personal entertainment and enjoyment only. You agree not to use or play them in class, during school hours, or in any educational setting.
+      <br>
+      <strong>Consequences of Violation:</strong> MB Games reserves the right to suspend or revoke access to the games if this rule is violated.
+      <br>
+      <strong>No Commercial Use:</strong> Games may not be shared, sold, or distributed for profit.
+      <br>
+      <strong>Modification of Terms:</strong> MB Games reserves the right to modify these terms at any time.
+    </p>
+    
+    <input type="checkbox" id="tosAgree">
+    <label for="tosAgree">I agree to the Terms of Service.</label>
+  </div>
 </div>
 
 <script>
@@ -83,13 +108,19 @@
 
   function validateKey() {
     let productKey = document.getElementById('productKey').value;
+    let tosAgree = document.getElementById('tosAgree').checked;
     let errorMessage = document.getElementById('errorMessage');
     
+    if (!tosAgree) {
+      errorMessage.textContent = "You must agree to the Terms of Service to proceed.";
+      errorMessage.style.color = "red";
+      return;
+    }
+    
     if (validKeys.includes(productKey)) {
-      errorMessage.textContent ="Valid key, redirecting...";
-      window.location.href = "https://www.dropbox.com/scl/fi/qmdifon78mskakuw9wbn7/Slope.html?rlkey=c0pxv9876solz1zgwd6x4zxlh&st=7fkm5pz3&dl=0";
+      errorMessage.textContent = "Valid key, redirecting...";
       errorMessage.style.color = "green";
-      // Add your download logic here, like triggering a file download
+      window.location.href = "https://www.dropbox.com/scl/fi/qmdifon78mskakuw9wbn7/Slope.html?rlkey=c0pxv9876solz1zgwd6x4zxlh&st=7fkm5pz3&dl=0";
     } else {
       errorMessage.textContent = "Invalid product key. Please try again.";
       errorMessage.style.color = "red";

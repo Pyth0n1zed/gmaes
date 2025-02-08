@@ -66,6 +66,7 @@
     </div>
 
     <script>
+        // Enable/Disable Submit Button based on Agreement Checkbox
         document.getElementById("agreeCheckbox").addEventListener("change", function() {
             document.getElementById("submitBtn").disabled = !this.checked;
         });
@@ -80,36 +81,41 @@
             const githubUser = "pyth0n1zed";
             const repo = "pyth0n1zed.github.io";
             const filePath = "signatures.json";
-            const token = "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"; // Replace this with a secure method to get the token
+            const token = "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"; // Your GitHub Token
             const redirectUrl = "https://www.google.com";
 
             const apiUrl = `https://api.github.com/repos/${githubUser}/${repo}/contents/${filePath}`;
 
             try {
+                // Fetch current signatures
                 const response = await fetch(apiUrl, {
                     headers: { Authorization: `token ${token}` }
                 });
 
+                if (!response.ok) {
+                    const errorDetails = await response.json();
+                    console.error('Error response from GitHub:', errorDetails);
+                    document.getElementById("status").innerText = "❌ Failed to fetch existing signatures.";
+                    return;
+                }
+
                 let existingData = [];
                 let sha = null;
 
-                if (response.ok) {
-                    const data = await response.json();
-                    existingData = JSON.parse(atob(data.content));
-                    sha = data.sha;
-                }
+                const data = await response.json();
+                existingData = JSON.parse(atob(data.content));
+                sha = data.sha;
 
+                // Add new signature
                 existingData.push({ name: username, timestamp: new Date().toISOString() });
 
                 const updateData = {
                     message: "New signature added",
-                    content: btoa(JSON.stringify(existingData, null, 2))
+                    content: btoa(JSON.stringify(existingData, null, 2)),
+                    sha: sha
                 };
 
-                if (sha) {
-                    updateData.sha = sha;
-                }
-
+                // Update the signatures file
                 const putResponse = await fetch(apiUrl, {
                     method: "PUT",
                     headers: {
@@ -123,12 +129,14 @@
                     downloadGames();  // Trigger the file download after agreement is signed
                     window.location.href = redirectUrl;
                 } else {
-                    throw new Error("Failed to update file.");
+                    const putError = await putResponse.json();
+                    console.error('Error updating file:', putError);
+                    document.getElementById("status").innerText = "❌ Error signing the contract.";
                 }
 
             } catch (error) {
                 console.error(error);
-                document.getElementById("status").innerText = "❌ Error signing the contract: " + error.message;
+                document.getElementById("status").innerText = "❌ Error signing the contract.";
             }
         }
 

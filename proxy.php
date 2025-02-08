@@ -1,10 +1,10 @@
 <?php
-// Set CORS headers to allow cross-origin requests
-header("Access-Control-Allow-Origin: *"); // For production, consider replacing '*' with your actual GitHub Pages domain.
+// Set CORS headers so that requests from other origins (e.g., your GitHub Pages site) are allowed.
+header("Access-Control-Allow-Origin: *"); // For security, you might replace '*' with your actual domain.
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// Handle preflight (OPTIONS) requests
+// Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -17,23 +17,22 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Read the raw POST data and decode it from JSON
+// Read the raw POST data and decode it as JSON
 $rawData = file_get_contents('php://input');
 $data = json_decode($rawData, true);
 
 if (!isset($data['code'])) {
-    // Return a JSON error if no product code was provided
     echo json_encode(["error" => "No product code provided"]);
     exit;
 }
 
 $code = $data['code'];
 
-// Construct the URL for your validation script.
+// Construct the URL to your validation script.
 // IMPORTANT: Update the URL below to point to your actual validation script on InfinityFree.
-$validationUrl = 'https://uhidk.fwh.is/validate.php?code=' . urlencode($code);
+$validationUrl = 'https://your-infinityfree-site.com/validate_code.php?code=' . urlencode($code);
 
-// Use cURL to call the validation script
+// Use cURL to fetch the response from your validation script.
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $validationUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -48,7 +47,7 @@ if ($response === false) {
 
 curl_close($ch);
 
-// Ensure the response is returned with a JSON content type header
+// Ensure the response is returned as JSON.
 header("Content-Type: application/json");
 echo $response;
 ?>

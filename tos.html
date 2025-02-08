@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MB Games Agreement</title>
   <style>
     body {
@@ -21,7 +21,8 @@
       margin: auto;
       text-align: left;
     }
-    input[type="text"], input[type="checkbox"] {
+    input[type="text"],
+    input[type="checkbox"] {
       margin-top: 10px;
     }
     button {
@@ -46,16 +47,20 @@
 <body>
   <div class="contract-box">
     <h2>MB Games Agreement</h2>
-    <p><strong>Use of Games</strong><br>By downloading MB Games, you agree not to play them in class.</p>
-    
+    <p>
+      <strong>Use of Games</strong><br />
+      By downloading MB Games, you agree not to play them in class.
+    </p>
     <label>
-      <input type="checkbox" id="agreeCheckbox">
+      <input type="checkbox" id="agreeCheckbox" />
       I agree to the terms above.
     </label>
-    <br>
-    <input type="text" id="username" placeholder="Enter your name">
-    <br>
-    <button id="submitBtn" onclick="signContract()" disabled>Sign Agreement</button>
+    <br />
+    <input type="text" id="username" placeholder="Enter your name" />
+    <br />
+    <button id="submitBtn" onclick="signContract()" disabled>
+      Sign Agreement
+    </button>
     <p id="status"></p>
   </div>
 
@@ -87,10 +92,12 @@
         const data = await response.json();
 
         if (response.ok) {
-          document.getElementById("status").innerText = "✅ Agreement signed successfully!";
+          document.getElementById("status").innerText =
+            "✅ Agreement signed successfully!";
         } else {
           console.error("Error:", data);
-          document.getElementById("status").innerText = "❌ Error signing the contract.";
+          document.getElementById("status").innerText =
+            "❌ Error signing the contract.";
         }
       } catch (error) {
         console.error("Request failed:", error);

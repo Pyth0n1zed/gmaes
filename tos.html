@@ -64,26 +64,37 @@
       document.getElementById("submitBtn").disabled = !this.checked;
     });
 
-    async function fetchFromGitHub(token) {
-    const apiUrl = "https://api.github.com/repos/yourUsername/yourRepo/contents/signatures.json";
-  
-    const response = await fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "User-Agent": "Cloudflare Worker"
-      }
-    });
-  
-    if (!response.ok) {
-      const errorDetails = await response.json();
-      console.error("GitHub API Error:", errorDetails);
-      throw new Error("GitHub API request failed.");
-    }
-  
-    const data = await response.json();
-    return data;
+  async function signContract() {
+  const username = document.getElementById("username").value.trim();
+  if (!username) {
+    document.getElementById("status").innerText = "❌ Please enter your name.";
+    return;
   }
+
+  const cloudflareWorkerUrl = "https://add-signature.brooksweb1.workers.dev"; // Change this!
+
+  try {
+    const response = await fetch(cloudflareWorkerUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ username: username })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      document.getElementById("status").innerText = "✅ Agreement signed successfully!";
+    } else {
+      console.error("Error:", data);
+      document.getElementById("status").innerText = "❌ Error signing the contract.";
+    }
+  } catch (error) {
+    console.error("Request failed:", error);
+    document.getElementById("status").innerText = "❌ Network error.";
+  }
+}
 
   </script>
 </body>

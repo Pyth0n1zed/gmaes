@@ -89,7 +89,7 @@
             try {
                 // Fetch current signatures
                 const response = await fetch(apiUrl, {
-                    headers: { Authorization: `token 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` }
+                    headers: { Authorization: `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` }
                 });
 
                 if (!response.ok) {
@@ -119,7 +119,7 @@
                 const putResponse = await fetch(apiUrl, {
                     method: "GET",
                     headers: {
-                        Authorization: `token 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`,
+                        Authorization: `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`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(updateData)

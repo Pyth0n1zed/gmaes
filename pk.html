@@ -22,8 +22,8 @@
 
       const code = document.getElementById('productCode').value;
       
-      // Using an alternative proxy service: ThingProxy
-      const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
+      // Using the CORS Bridged proxy service
+      const proxyUrl = 'https://cors.bridged.cc/';
       const targetUrl = 'https://uhidk.fwh.is/validate.php';  // Replace with your actual PHP backend URL
       const fullUrl = proxyUrl + targetUrl;
 

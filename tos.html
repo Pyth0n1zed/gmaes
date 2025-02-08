@@ -49,17 +49,19 @@
     <h2>MB Games Agreement</h2>
     <p>
       <strong>Use of Games</strong><br />
-      The games provided by MB Games are intended for personal entertainment and enjoyment. You may download and use the games on your personal devices.
+      The games provided by MB Games are intended for personal entertainment and enjoyment.
+      You may download and use the games on your personal devices.
     </p>
     <p>
       <strong>We do NOT condone the use of games in class.</strong>
     </p>
     <p>
-      <strong>By downloading these games, You agree not to use or play them in class, during school hours, or in any educational setting. Games should only be played at home.</strong>
+      <strong>By downloading these games, you agree not to use or play them in class, during school hours, or in any educational setting.
+      Games should only be played at home.</strong>
     </p>
     <p>
       <strong>Consequences of Violation</strong><br />
-      If You are found to be violating this rule by playing games in class, MB Games reserves the right to suspend or revoke your access to the website or any downloaded games without notice.
+      If you are found to be violating this rule by playing games in class, MB Games reserves the right to suspend or revoke your access to the website or any downloaded games without notice.
     </p>
     <p>
       <strong>No Commercial Use</strong><br />
@@ -67,13 +69,13 @@
     </p>
     <p>
       <strong>Modification of Terms</strong><br />
-      MB Games reserves the right to modify or update this Agreement at any time. Continued use of the website constitutes your acceptance of these changes.
+      MB Games reserves the right to modify or update this Agreement at any time.
+      Continued use of the website constitutes your acceptance of these changes.
     </p>
     <p>
       <strong>Acceptance</strong><br />
-      By downloading any games from MB Games, You acknowledge and accept the terms of this Agreement.
+      By downloading any games from MB Games, you acknowledge and accept the terms of this Agreement.
     </p>
-
     <label>
       <input type="checkbox" id="agreeCheckbox" />
       I agree to the terms above.
@@ -86,8 +88,8 @@
   </div>
 
   <script>
-    // Enable/Disable Submit Button based on Agreement Checkbox
-    document.getElementById("agreeCheckbox").addEventListener("change", function () {
+    // Enable/disable the submit button based on the checkbox
+    document.getElementById("agreeCheckbox").addEventListener("change", function() {
       document.getElementById("submitBtn").disabled = !this.checked;
     });
 
@@ -98,100 +100,45 @@
         return;
       }
 
-      // Update these values to match your repository details
-      const githubUser = "pyth0n1zed";
-      const repo = "pyth0n1zed.github.io";
-      const filePath = "signatures.json";
-      // NOTE: Remove the literal "token " from the beginning of your token string.
-      const token = "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";
-      const redirectUrl = "https://www.google.com";
+      // Replace these placeholders with your actual data:
+      const token = "YOUR_GITHUB_TOKEN";         // Your GitHub Personal Access Token
+      const repoOwner = "yourUsername";            // Your GitHub username
+      const repoName = "yourRepo";                 // Repository where your GitHub Pages are hosted
+      const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/dispatches`;
 
-      const apiUrl = `https://api.github.com/repos/${githubUser}/${repo}/contents/${filePath}`;
+      // The payload that the GitHub Action will receive
+      const payload = {
+        event_type: "add-signature",  // The custom event your GitHub Action listens for
+        client_payload: {
+          username: username
+        }
+      };
 
       try {
-        // Fetch current signatures
         const response = await fetch(apiUrl, {
-          headers: { Authorization: `token ${token}` }
-        });
-
-        if (!response.ok) {
-          const errorDetails = await response.json();
-          console.error("Error response from GitHub:", errorDetails);
-          document.getElementById("status").innerText = "❌ Failed to fetch existing signatures.";
-          return;
-        }
-
-        let existingData = [];
-        let sha = null;
-
-        const data = await response.json();
-        // Check if content exists and is not empty
-        if (data.content && data.content.trim() !== "") {
-          try {
-            // Decode base64 content and parse it as JSON
-            existingData = JSON.parse(atob(data.content));
-          } catch (error) {
-            console.error("Error parsing existing data:", error);
-            document.getElementById("status").innerText = "❌ Failed to parse existing signatures.";
-            return;
-          }
-        } else {
-          // If content is empty or doesn't exist, initialize as an empty array
-          existingData = [];
-        }
-
-        sha = data.sha;
-
-        // Add new signature
-        existingData.push({ name: username, timestamp: new Date().toISOString() });
-
-        const updateData = {
-          message: "New signature added",
-          content: btoa(JSON.stringify(existingData, null, 2)),
-          sha: sha
-        };
-
-        // Update the signatures file using PUT
-        const putResponse = await fetch(apiUrl, {
-          method: "PUT",
+          method: "POST",
           headers: {
-            Authorization: `token ${token}`,
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/vnd.github.v3+json",
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(updateData)
+          body: JSON.stringify(payload)
         });
 
-        if (putResponse.ok) {
-          downloadGames(); // Trigger the file download after agreement is signed
-          window.location.href = redirectUrl;
+        if (response.ok) {
+          document.getElementById("status").innerText = "✅ Successfully signed the contract!";
+          // Redirect if desired:
+          window.location.href = "https://www.google.com";
         } else {
-          const putError = await putResponse.json();
-          console.error("Error updating file:", putError);
-          document.getElementById("status").innerText = "❌ Error signing the contract.";
+          const error = await response.json();
+          document.getElementById("status").innerText = "❌ Error triggering action.";
+          console.error("Error response from GitHub:", error);
         }
       } catch (error) {
-        console.error(error);
-        document.getElementById("status").innerText = "❌ Error signing the contract.";
+        console.error("Error:", error);
+        document.getElementById("status").innerText = "❌ Error triggering action.";
       }
     }
-
-    // Function to trigger the download of game files
-    function downloadGames() {
-      const files = [
-        "2048.html",
-        "celeste.html",
-        "slpe.html",
-        "stack.html"
-      ];
-      
-      files.forEach(function (file) {
-        const link = document.createElement("a");
-        link.href = `https://mathhelperbeta.py-things.com/games/${file}`;
-        link.download = file;
-        link.click();
-      });
-    }
   </script>
-
 </body>
 </html>

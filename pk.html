@@ -21,14 +21,12 @@
       event.preventDefault(); // Prevent default form submission
 
       const code = document.getElementById('productCode').value;
-      const fullUrl = `https://uhidk.fwh.is/validate.php?code=${encodeURIComponent(code)}`;
+      const targetUrl = `https://uhidk.fwh.is/validate.php?code=${encodeURIComponent(code)}`;
 
-      fetch(fullUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json'
-        }
-      })
+      // Using ThingProxy
+      const proxyUrl = `https://thingproxy.freeboard.io/fetch/${targetUrl}`;
+
+      fetch(proxyUrl)
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

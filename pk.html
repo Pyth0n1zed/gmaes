@@ -13,7 +13,8 @@ async function validateCode() {
 
   const data = await response.json();
   if (data.downloadLink) {
-    window.location.href = data.downloadLink; // Redirect to download
+    window.location.href = data.downloadLink; // Redirect to download;
+    alert("i think its correct betch");
   } else {
     document.getElementById("message").innerText = data.error;
   }

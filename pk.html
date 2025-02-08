@@ -1,0 +1,23 @@
+<input type="text" id="codeInput" placeholder="Enter Product Code">
+<button onclick="validateCode()">Download</button>
+<p id="message"></p>
+
+<script>
+async function validateCode() {
+  const code = document.getElementById("codeInput").value;
+  const response = await fetch("https://your-infinityfree-site.com/validate.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code }),
+  });
+
+  const data = await response.json();
+  if (data.downloadLink) {
+    window.location.href = data.downloadLink; // Redirect to download
+  } else {
+    document.getElementById("message").innerText = data.error;
+  }
+}
+</script>
+
+Message @Emerald

@@ -3,66 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Product</title>
+    <title>Product Code Validation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 20px;
             padding: 20px;
+            background-color: #f4f4f9;
         }
-
-        input[type="text"] {
+        input {
             padding: 10px;
             font-size: 16px;
-            margin-right: 10px;
-            width: 200px;
+            width: 300px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
-
         button {
-            padding: 10px 15px;
+            padding: 10px 20px;
             font-size: 16px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
             cursor: pointer;
         }
-
+        button:hover {
+            background-color: #45a049;
+        }
         p {
-            color: red;
-            font-weight: bold;
+            font-size: 16px;
+            color: #ff0000;
         }
     </style>
 </head>
 <body>
-    <h1>Enter Product Code to Download</h1>
-    <div>
-        <input type="text" id="codeInput" placeholder="Enter Product Code">
-        <button onclick="validateCode()">Download</button>
-    </div>
+
+    <h2>Enter Your Product Code</h2>
+    <input type="text" id="codeInput" placeholder="Enter Product Code">
+    <button onclick="validateCode()">Download</button>
     <p id="message"></p>
 
     <script>
         async function validateCode() {
             const code = document.getElementById("codeInput").value;
+            const messageElement = document.getElementById("message");
 
-            // Check if the code is empty
-            if (!code) {
-                document.getElementById("message").innerText = "Please enter a product code.";
+            // Clear any previous messages
+            messageElement.innerText = '';
+
+            // Validate the code format if needed
+            if (code.trim() === '') {
+                messageElement.innerText = 'Please enter a product code.';
                 return;
             }
 
-            // Send the product code to the validate.php script
-            const response = await fetch("https://uhidk.fwh.is/validate.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code }),
-            });
+            try {
+                const response = await fetch("https://uhidk.fwh.is/validate.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ code }),
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            // If there's a valid download link, redirect to it
-            if (data.downloadLink) {
-                window.location.href = data.downloadLink; // Redirect to download
-            } else {
-                document.getElementById("message").innerText = data.error; // Show error message
+                if (data.downloadLink) {
+                    window.location.href = data.downloadLink; // Redirect to download
+                } else {
+                    messageElement.innerText = data.error || 'An unexpected error occurred.';
+                }
+
+            } catch (error) {
+                messageElement.innerText = 'Failed to validate the product code. Please try again later.';
             }
         }
     </script>
+
 </body>
 </html>

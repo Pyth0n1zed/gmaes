@@ -22,19 +22,24 @@
 
       const code = document.getElementById('productCode').value;
       
-      // Using CORS Proxy service
-      const proxyUrl = 'https://corsproxy.io/?';
-      const targetUrl = encodeURIComponent('https://uhidk.fwh.is/validate.php?code=' + code);
+      // Using All Origins proxy service
+      const proxyUrl = 'https://api.allorigins.win/get?url=';
+      const targetUrl = encodeURIComponent('https://uhidk.fwh.is/validate.php?code=' + code); // Modified to use GET
       const fullUrl = proxyUrl + targetUrl;
 
       fetch(fullUrl, {
-        method: 'GET'
+        method: 'GET', // All Origins only supports GET requests
       })
       .then(response => response.json())
       .then(data => {
-        if (data) {
+        if (data.contents) {
           try {
-            document.getElementById('result').textContent = data.message || 'Invalid response';
+            const parsedData = JSON.parse(data.contents); // Parse JSON response
+            if (parsedData.error) {
+              document.getElementById('result').textContent = 'Error: ' + parsedData.error;
+            } else {
+              document.getElementById('result').textContent = parsedData.message;
+            }
           } catch (error) {
             document.getElementById('result').textContent = 'Invalid response from server.';
           }

@@ -57,13 +57,10 @@
   <div id="errorMessage" class="error"></div>
 </div>
 
-<script src="https://cdn.turso.tech/turso.js"></script>
 <script>
-  // Initialize Turso client (replace with your actual credentials)
-  const turso = new Turso({
-    endpoint: 'https://productkeys-emeraldpig52.turso.io',
-    token: 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3Mzg5OTQ5MTcsImlkIjoiMWJiNzE0ZWQtYmJmZi00NDc5LWFlNzQtMTk1NjUwZDY5OGE3In0.1MuDluRhJ5E42JwGxHjoqNsXppBftdbzT2wu3rPWV6nwN5XQ2kkY7U3koTjDisydexcgG7I7xaW89kmB3HHJAg'
-  });
+  // Replace with your actual Turso endpoint and token
+  const endpoint = 'https://your-database-endpoint.turso.io'; // Example endpoint
+  const apiToken = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3Mzg5OTQ5MTcsImlkIjoiMWJiNzE0ZWQtYmJmZi00NDc5LWFlNzQtMTk1NjUwZDY5OGE3In0.1MuDluRhJ5E42JwGxHjoqNsXppBftdbzT2wu3rPWV6nwN5XQ2kkY7U3koTjDisydexcgG7I7xaW89kmB3HHJAg';
 
   async function validateKey() {
     const productKey = document.getElementById('productKey').value.trim();
@@ -78,13 +75,22 @@
     }
 
     try {
-      // Query the Turso database to check if the key exists
-      const result = await turso.query(`
-        SELECT * FROM product_keys WHERE key = '${productKey}' AND valid = true
-      `);
+      // Send a POST request to the Turso API to query the product key
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiToken}`,
+        },
+        body: JSON.stringify({
+          query: `SELECT * FROM product_keys WHERE key = '${productKey}' AND valid = true`,
+        }),
+      });
 
-      // If the result is empty, the product key doesn't exist or isn't valid
-      if (result.length === 0) {
+      // Parse the response
+      const data = await response.json();
+
+      if (!data || data.length === 0) {
         errorMessage.textContent = 'Invalid product key.';
         return;
       }

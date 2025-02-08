@@ -21,30 +21,26 @@
       event.preventDefault(); // Prevent default form submission
 
       const code = document.getElementById('productCode').value;
-      
-      // Using CORS Proxy service
-      const proxyUrl = 'https://corsproxy.io/?';
-      const targetUrl = encodeURIComponent('https://uhidk.fwh.is/validate.php?code=' + code);
-      const fullUrl = proxyUrl + targetUrl;
+      const fullUrl = `https://uhidk.fwh.is/validate.php?code=${encodeURIComponent(code)}`;
 
       fetch(fullUrl, {
-        method: 'GET'
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data) {
-          try {
-            document.getElementById('result').textContent = data.message || 'Invalid response';
-          } catch (error) {
-            document.getElementById('result').textContent = 'Invalid response from server.';
-          }
-        } else {
-          document.getElementById('result').textContent = 'Error retrieving data.';
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
         }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById('result').textContent = data.message || 'Invalid response';
       })
       .catch(error => {
         console.error('Fetch error:', error);
-        document.getElementById('result').textContent = 'Error validating code: ' + error;
+        document.getElementById('result').textContent = 'Error validating code: ' + error.message;
       });
     });
   </script>

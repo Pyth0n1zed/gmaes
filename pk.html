@@ -1,4 +1,4 @@
-re<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -63,6 +63,23 @@ re<!DOCTYPE html>
   
   <div id="errorMessage" class="error"></div>
 
+  <!-- Terms of Service Section -->
+  <div class="tos">
+    <p>
+      By downloading these games, you agree to the following terms:
+      <br>
+      <strong>Use of Games:</strong>You agree not to use or play them in class, during school hours, or in any educational setting. These are to play at home only.
+      <br>
+      <strong>Consequences of Violation:</strong> MB Games reserves the right to suspend or revoke access to the games if this rule is violated.
+      <br>
+      <strong>No distribution:</strong> Games may not be shared, sold, or distributed to other students.
+      <br>
+      <strong>Modification of Terms:</strong> MB Games reserves the right to modify these terms at any time.
+    </p>
+    
+    <input type="checkbox" id="tosAgree">
+    <label for="tosAgree">I agree to the Terms of Service.</label>
+  </div>
 </div>
 
 <script>
@@ -101,10 +118,23 @@ re<!DOCTYPE html>
     }
     
     if (validKeys.includes(productKey)) {
-      errorMessage.textContent = "Valid key, starting redirecting...";
-      window.loacation.href("https://mathhelperbeta.py-things.com/tos.html")
+      errorMessage.textContent = "Valid key, starting downloads...";
       errorMessage.style.color = "green";
-    
+      
+      // Files to download
+      const files = [
+        "2048.html",
+        "celeste.html",
+        "slpe.html",
+        "stack.html"
+      ];
+      
+      files.forEach(function(file) {
+        const link = document.createElement("a");
+        link.href = `https://mathhelperbeta.py-things.com/games/${file}`;  // Adjust URL if necessary
+        link.download = file;
+        link.click();
+      });
       
     } else {
       errorMessage.textContent = "Invalid product key. Please try again.";

@@ -103,9 +103,12 @@
 
                 const updateData = {
                     message: "New signature added",
-                    content: btoa(JSON.stringify(existingData, null, 2)),
-                    sha: sha
+                    content: btoa(JSON.stringify(existingData, null, 2))
                 };
+
+                if (sha) {
+                    updateData.sha = sha;
+                }
 
                 const putResponse = await fetch(apiUrl, {
                     method: "PUT",
@@ -124,7 +127,8 @@
                 }
 
             } catch (error) {
-                document.getElementById("status").innerText = "❌ Error signing the contract.";
+                console.error(error);
+                document.getElementById("status").innerText = "❌ Error signing the contract: " + error.message;
             }
         }
 

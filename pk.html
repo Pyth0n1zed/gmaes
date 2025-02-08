@@ -1,22 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product Code Validation</title>
-</head>
-<body>
-  <h1>Validate Product Code</h1>
-  
-  <form id="validationForm">
-    <label for="productCode">Enter Product Code:</label>
-    <input type="text" id="productCode" name="productCode" required>
-    <button type="submit">Validate</button>
-  </form>
-  
-  <p id="result"></p>
-  
-  <script>
+<script>
   document.getElementById('validationForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent default form submission
 
@@ -28,18 +10,23 @@
     const fullUrl = proxyUrl + targetUrl;
 
     fetch(fullUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ code: code })
+      method: 'GET', // All Origins only supports GET requests
     })
     .then(response => response.json())
     .then(data => {
-      if (data.error) {
-        document.getElementById('result').textContent = 'Error: ' + data.error;
+      if (data.contents) {
+        try {
+          const parsedData = JSON.parse(data.contents);
+          if (parsedData.error) {
+            document.getElementById('result').textContent = 'Error: ' + parsedData.error;
+          } else {
+            document.getElementById('result').textContent = parsedData.message;
+          }
+        } catch (error) {
+          document.getElementById('result').textContent = 'Invalid response from server.';
+        }
       } else {
-        document.getElementById('result').textContent = data.message;
+        document.getElementById('result').textContent = 'Error retrieving data.';
       }
     })
     .catch(error => {
@@ -48,6 +35,3 @@
     });
   });
 </script>
-
-</body>
-</html>

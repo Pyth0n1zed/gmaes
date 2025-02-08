@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product Code Validation</title>
 </head>
 <body>
@@ -18,13 +18,13 @@
   
   <script>
     document.getElementById('validationForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent form submission
+      event.preventDefault(); // Prevent default form submission
 
       const code = document.getElementById('productCode').value;
       
-      // Using the CORS Bridged proxy service
-      const proxyUrl = 'https://cors.bridged.cc/';
-      const targetUrl = 'https://uhidk.fwh.is/validate.php';  // Replace with your actual PHP backend URL
+      // Using the ThingProxy service
+      const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
+      const targetUrl = 'https://uhidk.fwh.is/validate.php'; // Replace with your actual backend URL
       const fullUrl = proxyUrl + targetUrl;
 
       fetch(fullUrl, {
@@ -34,7 +34,12 @@
         },
         body: JSON.stringify({ code: code })
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok. Status: ' + response.status);
+        }
+        return response.json();
+      })
       .then(data => {
         if (data.error) {
           document.getElementById('result').textContent = 'Error: ' + data.error;

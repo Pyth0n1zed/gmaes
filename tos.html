@@ -65,36 +65,36 @@
     });
 
     async function signContract() {
-  const username = document.getElementById("username").value.trim();
-  if (!username) {
-    document.getElementById("status").innerText = "❌ Please enter your name.";
-    return;
-  }
-
-  const cloudflareWorkerUrl = "https://your-worker-url.workers.dev"; // Replace with your actual Cloudflare Worker URL
-
-  try {
-    const response = await fetch(cloudflareWorkerUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ username: username })
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      document.getElementById("status").innerText = "✅ Agreement signed successfully!";
-    } else {
-      console.error("Error:", data);
-      document.getElementById("status").innerText = "❌ Error signing the contract.";
+    const username = document.getElementById("username").value.trim();
+    if (!username) {
+      document.getElementById("status").innerText = "❌ Please enter your name.";
+      return;
     }
-  } catch (error) {
-    console.error("Request failed:", error);
-    document.getElementById("status").innerText = "❌ Network error.";
+  
+    const cloudflareWorkerUrl = "https://your-worker-url.workers.dev"; // Change this!
+  
+    try {
+      const response = await fetch(cloudflareWorkerUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: username })
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        document.getElementById("status").innerText = "✅ Agreement signed successfully!";
+      } else {
+        console.error("Error:", data);
+        document.getElementById("status").innerText = "❌ Error signing the contract.";
+      }
+    } catch (error) {
+      console.error("Request failed:", error);
+      document.getElementById("status").innerText = "❌ Network error.";
+    }
   }
-}
   </script>
 </body>
 </html>

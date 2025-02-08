@@ -3,148 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MB Games Agreement</title>
+    <title>MB Games - Terms of Service</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #1e1e2e;
-            color: #cdd6f4;
+            margin: 40px;
+            background-color: #1e1e1e;
+            color: #fff;
             text-align: center;
-            padding: 50px;
         }
-        .contract-box {
-            background: #313244;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
+        .container {
+            max-width: 600px;
             margin: auto;
-            text-align: left;
+            background: #282828;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
-        input[type="text"], input[type="checkbox"] {
+        h2 { color: #f39c12; }
+        label { display: block; margin-top: 10px; }
+        input, button {
             margin-top: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
         }
         button {
-            background-color: #89b4fa;
-            color: #1e1e2e;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            background: #f39c12;
+            color: black;
             cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
         }
-        button:disabled {
-            background-color: #6272a4;
-            cursor: not-allowed;
-        }
-        button:hover:not(:disabled) {
-            background-color: #74c7ec;
-        }
+        button:hover { background: #e67e22; }
     </style>
 </head>
 <body>
-
-    <div class="contract-box">
-        <h2>MB Games Agreement</h2>
-        <p><strong>Use of Games</strong><br>The games provided by MB Games are intended for personal entertainment and enjoyment. You may download and use the games on your personal devices.</p>
-        <p><strong>We do NOT condone the use of games in class.</strong></p>
-        <p><strong>By downloading these games, You agree not to use or play them in class, during school hours, or in any educational setting. Games should only be played at home.</strong></p>
-        <p><strong>Consequences of Violation</strong><br>If You are found to be violating this rule by playing games in class, MB Games reserves the right to suspend or revoke your access to the website or any downloaded games without notice.</p>
-        <p><strong>No Commercial Use</strong><br>You agree that the games provided are for personal use only and may not be shared, sold, or distributed to other students.</p>
-        <p><strong>Modification of Terms</strong><br>MB Games reserves the right to modify or update this Agreement at any time. Continued use of the website constitutes your acceptance of these changes.</p>
-        <p><strong>Acceptance</strong><br>By downloading any games from MB Games, You acknowledge and accept the terms of this Agreement.</p>
-
+    <div class="container">
+        <h2>MB Games - Terms of Service</h2>
+        <p>By agreeing, you confirm that:</p>
+        <ul style="text-align: left;">
+            <li>✅ You will only use these games for personal enjoyment.</li>
+            <li>🚫 You will NOT play them in class or during school hours.</li>
+            <li>💰 No commercial use, sharing, or selling is allowed.</li>
+            <li>📜 MB Games can update these terms at any time.</li>
+        </ul>
         <label>
-            <input type="checkbox" id="agreeCheckbox"> I agree to the terms above.
+            <input type="checkbox" id="agree"> I agree to the terms.
         </label>
-        <br>
-        <input type="text" id="username" placeholder="Enter your name">
-        <br>
-        <button id="submitBtn" onclick="signContract()" disabled>Sign Agreement</button>
+        <label for="name">Enter your name:</label>
+        <input type="text" id="name" placeholder="Your Name">
+        <button onclick="submitSignature()">Agree & Proceed</button>
         <p id="status"></p>
     </div>
 
     <script>
-        document.getElementById("agreeCheckbox").addEventListener("change", function() {
-            document.getElementById("submitBtn").disabled = !this.checked;
-        });
+        async function submitSignature() {
+            const name = document.getElementById("name").value.trim();
+            const agreed = document.getElementById("agree").checked;
+            const status = document.getElementById("status");
 
-        async function signContract() {
-            const username = document.getElementById("username").value.trim();
-            if (!username) {
-                document.getElementById("status").innerText = "❌ Please enter your name.";
+            if (!agreed || name === "") {
+                status.innerText = "❌ Please enter your name and check the box.";
+                status.style.color = "red";
                 return;
             }
 
-            const githubUser = "pyth0n1zed";
-            const repo = "pyth0n1zed.github.io";
-            const filePath = "signatures.json";
-            const token = "YOUR_GITHUB_TOKEN"; // Replace this with a secure method to get the token
-            const redirectUrl = "https://www.google.com";
+            status.innerText = "⏳ Submitting...";
+            status.style.color = "yellow";
 
-            const apiUrl = `https://api.github.com/repos/${githubUser}/${repo}/contents/${filePath}`;
+            const token = "YOUR_GITHUB_TOKEN"; // Replace with a fine-grained PAT
+            const repoOwner = "YOUR_USERNAME"; // Your GitHub username
+            const repoName = "YOUR_REPO"; // Your repo name
+            const workflowFile = "update-signatures.yml"; // Your workflow filename
+
+            const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/actions/workflows/${workflowFile}/dispatches`;
+
+            const payload = {
+                ref: "main", // Change if your branch is different
+                inputs: { name }
+            };
 
             try {
                 const response = await fetch(apiUrl, {
-                    headers: { Authorization: `token ${token}` }
-                });
-
-                let existingData = [];
-                let sha = null;
-
-                if (response.ok) {
-                    const data = await response.json();
-                    existingData = JSON.parse(atob(data.content));
-                    sha = data.sha;
-                }
-
-                existingData.push({ name: username, timestamp: new Date().toISOString() });
-
-                const updateData = {
-                    message: "New signature added",
-                    content: btoa(JSON.stringify(existingData, null, 2)),
-                    sha: sha
-                };
-
-                const putResponse = await fetch(apiUrl, {
-                    method: "PUT",
+                    method: "POST",
                     headers: {
-                        Authorization: `token ${token}`,
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/vnd.github.v3+json",
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(updateData)
+                    body: JSON.stringify(payload)
                 });
 
-                if (putResponse.ok) {
-                    downloadGames();  // Trigger the file download after agreement is signed
-                    window.location.href = redirectUrl;
+                if (response.ok) {
+                    status.innerText = "✅ Successfully submitted!";
+                    status.style.color = "green";
+                    setTimeout(() => window.location.href = "thank-you.html", 2000);
                 } else {
-                    throw new Error("Failed to update file.");
+                    throw new Error(await response.text());
                 }
-
             } catch (error) {
-                document.getElementById("status").innerText = "❌ Error signing the contract.";
+                console.error("GitHub API Error:", error);
+                status.innerText = "❌ Submission failed!";
+                status.style.color = "red";
             }
         }
-
-        // Function to trigger the download of game files
-        function downloadGames() {
-            const files = [
-                "2048.html",
-                "celeste.html",
-                "slpe.html",
-                "stack.html"
-            ];
-            
-            files.forEach(function(file) {
-                const link = document.createElement("a");
-                link.href = `https://mathhelperbeta.py-things.com/games/${file}`;
-                link.download = file;
-                link.click();
-            });
-        }
     </script>
-
 </body>
 </html>
+

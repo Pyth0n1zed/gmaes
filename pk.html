@@ -1,45 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Code Validation</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Code Validation</title>
 </head>
 <body>
-    <h1>Validate Product Code</h1>
-
-    <form id="validationForm">
-        <label for="productCode">Enter Product Code:</label>
-        <input type="text" id="productCode" name="productCode" required>
-        <button type="submit">Validate</button>
-    </form>
-
-    <p id="result"></p>
-
-    <script>
-        // Handle form submission
-        document.getElementById('validationForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form from refreshing the page
-
-            const code = document.getElementById('productCode').value;
-
-            // Send POST request to proxy.php
-            fetch('https://mathhelperbeta.py-things.com/proxy.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ code: code }) // Send the product code as JSON
-            })
-            .then(response => response.json()) // Parse the JSON response
-            .then(data => {
-                document.getElementById('result').textContent = 'Validation result: ' + (data.valid ? 'Valid' : 'Invalid');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('result').textContent = 'Error validating code';
-            });
-        });
-    </script>
+  <h1>Validate Product Code</h1>
+  
+  <!-- Form for entering product code -->
+  <form id="validationForm">
+    <label for="productCode">Enter Product Code:</label>
+    <input type="text" id="productCode" name="productCode" required />
+    <button type="submit">Validate</button>
+  </form>
+  
+  <!-- Display the result -->
+  <p id="result"></p>
+  
+  <script>
+    // Listen for form submission
+    document.getElementById('validationForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent page reload
+      
+      const code = document.getElementById('productCode').value;
+      
+      // Make a POST request to your proxy.php endpoint
+      fetch('https://mathhelperbeta.py-things.com/proxy.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code: code }) // Send the product code as JSON
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.error) {
+          document.getElementById('result').textContent = 'Error: ' + data.error;
+        } else {
+          // Adjust this line based on the actual response structure
+          document.getElementById('result').textContent = 'Validation result: ' + (data.valid ? 'Valid' : 'Invalid');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('result').textContent = 'Error validating code';
+      });
+    });
+  </script>
 </body>
 </html>

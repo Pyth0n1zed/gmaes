@@ -102,7 +102,7 @@
       const githubUser = "pyth0n1zed";
       const repo = "pyth0n1zed.github.io";
       const filePath = "signatures.json";
-      const token = "token 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"; // Your GitHub Personal Access Token
+      const token = "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"; // Your GitHub Personal Access Token
       const redirectUrl = "https://www.google.com";
 
       const apiUrl = `https://api.github.com/repos/pyth0n1zed/pyth0n1zed.github.io/contents/signatures.json`;
@@ -110,7 +110,7 @@
       try {
         // Fetch current signatures
         const response = await fetch(apiUrl, {
-          headers: { Authorization: `Bearer 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` }
+          headers: { Authorization: `Bearer ${token}` }
         });
 
         if (!response.ok) {
@@ -154,7 +154,7 @@
         const putResponse = await fetch(apiUrl, {
           method: "PUT",
           headers: {
-            Authorization: `Bearer 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`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify(updateData)

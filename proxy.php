@@ -1,51 +1,54 @@
 <?php
 // Set CORS headers to allow cross-origin requests
-header("Access-Control-Allow-Origin: *"); // For production, replace '*' with your GitHub Pages domain if possible.
+header("Access-Control-Allow-Origin: *"); // For production, consider replacing '*' with your actual GitHub Pages domain.
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// Handle preflight OPTIONS request
+// Handle preflight (OPTIONS) requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// Ensure that only POST requests are processed
+// Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("HTTP/1.1 405 Method Not Allowed");
     echo json_encode(["error" => "Method Not Allowed. Use POST."]);
     exit;
 }
 
-// Read and decode the JSON data from the request body
+// Read the raw POST data and decode it from JSON
 $rawData = file_get_contents('php://input');
 $data = json_decode($rawData, true);
 
-// Verify that the product code was sent
 if (!isset($data['code'])) {
+    // Return a JSON error if no product code was provided
     echo json_encode(["error" => "No product code provided"]);
     exit;
 }
 
 $code = $data['code'];
 
-// Construct the URL to your validation script. 
-// Replace the URL below with the correct path to your validation PHP script.
-$validationUrl = 'https://uhidk.fwh.is/validate.php?code=' . urlencode($code);
+// Construct the URL for your validation script.
+// IMPORTANT: Update the URL below to point to your actual validation script on InfinityFree.
+$validationUrl = 'https://your-infinityfree-site.com/validate_code.php?code=' . urlencode($code);
 
-// Use cURL to fetch the response from the validation script
+// Use cURL to call the validation script
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $validationUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
-$curlError = curl_error($ch);
-curl_close($ch);
 
 if ($response === false) {
-    echo json_encode(["error" => "Error fetching validation data: " . $curlError]);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+    echo json_encode(["error" => "cURL error: " . $curlError]);
     exit;
 }
 
-// Output the response from the validation script (assumed to be JSON)
+curl_close($ch);
+
+// Ensure the response is returned with a JSON content type header
+header("Content-Type: application/json");
 echo $response;
 ?>

@@ -22,11 +22,9 @@
       
       const code = document.getElementById('productCode').value;
       
-      // Using AllOrigins as the proxy service:
-      const proxyUrl = 'https://api.allorigins.win/raw?url=';
-      // Replace this with your actual PHP backend URL (hosted on InfinityFree or elsewhere)
-      const targetUrl = 'https://uhidk.fwh.is/validate.php';
-      const fullUrl = proxyUrl + encodeURIComponent(targetUrl);
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const targetUrl = 'https://uhidk.fwh.is/validate.php';
+    const fullUrl = proxyUrl + targetUrl;
       
       fetch(fullUrl, {
         method: 'POST',

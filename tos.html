@@ -81,7 +81,7 @@
             const githubUser = "pyth0n1zed";
             const repo = "pyth0n1zed.github.io";
             const filePath = "signatures.json";
-            const token = "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"; // Your GitHub Token
+            const token = "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"; // Your GitHub Token
             const redirectUrl = "https://www.google.com";
 
             const apiUrl = `https://api.github.com/repos/${githubUser}/${repo}/contents/${filePath}`;
@@ -90,7 +90,7 @@
                 // Fetch current signatures
                 const response = await fetch(apiUrl, {
                     headers: {
-                        Authorization: `token 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` }
+                        Authorization: `token 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`}
                 });
 
                 if (!response.ok) {

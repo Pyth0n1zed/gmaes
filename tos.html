@@ -66,86 +66,107 @@
     </div>
 
     <script>
-    async function signContract() {
-    const username = document.getElementById("username").value.trim();
-    if (!username) {
-        document.getElementById("status").innerText = "❌ Please enter your name.";
-        return;
-    }
-
-    const githubUser = "pyth0n1zed";
-    const repo = "pyth0n1zed.github.io";
-    const filePath = "signatures.json";
-    const token = "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"; // Your GitHub Token
-    const redirectUrl = "https://www.google.com";
-
-    const apiUrl = `https://api.github.com/repos/pyth0n1zed/pyth0n1zed.github.io/contents/signatures.json`;
-
-    try {
-        // Fetch current signatures
-        const response = await fetch(apiUrl, {
-            headers: { Authorization: `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` }
+        // Enable/Disable Submit Button based on Agreement Checkbox
+        document.getElementById("agreeCheckbox").addEventListener("change", function() {
+            document.getElementById("submitBtn").disabled = !this.checked;
         });
 
-        if (!response.ok) {
-            const errorDetails = await response.json();
-            console.error('Error response from GitHub:', errorDetails);
-            document.getElementById("status").innerText = "❌ Failed to fetch existing signatures.";
-            return;
-        }
-
-        let existingData = [];
-        let sha = null;
-
-        const data = await response.json();
-        if (data.content) {
-            try {
-                existingData = JSON.parse(atob(data.content)); // decode the base64 content
-            } catch (error) {
-                console.error("Error parsing existing data:", error);
-                document.getElementById("status").innerText = "❌ Failed to parse existing signatures.";
+        async function signContract() {
+            const username = document.getElementById("username").value.trim();
+            if (!username) {
+                document.getElementById("status").innerText = "❌ Please enter your name.";
                 return;
             }
-        } else {
-            // In case the content is missing or empty, initialize it as an empty array
-            existingData = [];
+
+            const githubUser = "pyth0n1zed";
+            const repo = "pyth0n1zed.github.io";
+            const filePath = "signatures.json";
+            const token = "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"; // Your GitHub Token
+            const redirectUrl = "https://www.google.com";
+
+            const apiUrl = `https://api.github.com/repos/pyth0n1zed/pyth0n1zed.github.io/contents/signatures.json`;
+
+            try {
+                // Fetch current signatures
+                const response = await fetch(apiUrl, {
+                    headers: { Authorization: `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` }
+                });
+
+                if (!response.ok) {
+                    const errorDetails = await response.json();
+                    console.error('Error response from GitHub:', errorDetails);
+                    document.getElementById("status").innerText = "❌ Failed to fetch existing signatures.";
+                    return;
+                }
+
+                let existingData = [];
+                let sha = null;
+
+                const data = await response.json();
+                if (data.content) {
+                    try {
+                        existingData = JSON.parse(atob(data.content)); // decode the base64 content
+                    } catch (error) {
+                        console.error("Error parsing existing data:", error);
+                        document.getElementById("status").innerText = "❌ Failed to parse existing signatures.";
+                        return;
+                    }
+                } else {
+                    // In case the content is missing or empty, initialize it as an empty array
+                    existingData = [];
+                }
+                sha = data.sha;
+
+                // Add new signature
+                existingData.push({ name: username, timestamp: new Date().toISOString() });
+
+                const updateData = {
+                    message: "New signature added",
+                    content: btoa(JSON.stringify(existingData, null, 2)),
+                    sha: sha
+                };
+
+                // Update the signatures file
+                const putResponse = await fetch(apiUrl, {
+                    method: "PUT",  // Change from GET to PUT for updating content
+                    headers: {
+                        Authorization: `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`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (putResponse.ok) {
+                    downloadGames();  // Trigger the file download after agreement is signed
+                    window.location.href = redirectUrl;
+                } else {
+                    const putError = await putResponse.json();
+                    console.error('Error updating file:', putError);
+                    document.getElementById("status").innerText = "❌ Error signing the contract.";
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById("status").innerText = "❌ Error signing the contract.";
+            }
         }
-        sha = data.sha;
 
-        // Add new signature
-        existingData.push({ name: username, timestamp: new Date().toISOString() });
-
-        const updateData = {
-            message: "New signature added",
-            content: btoa(JSON.stringify(existingData, null, 2)),
-            sha: sha
-        };
-
-        // Update the signatures file
-        const putResponse = await fetch(apiUrl, {
-            method: "PUT",  // Change from GET to PUT for updating content
-            headers: {
-                Authorization: `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`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(updateData)
-        });
-
-        if (putResponse.ok) {
-            downloadGames();  // Trigger the file download after agreement is signed
-            window.location.href = redirectUrl;
-        } else {
-            const putError = await putResponse.json();
-            console.error('Error updating file:', putError);
-            document.getElementById("status").innerText = "❌ Error signing the contract.";
+        // Function to trigger the download of game files
+        function downloadGames() {
+            const files = [
+                "2048.html",
+                "celeste.html",
+                "slpe.html",
+                "stack.html"
+            ];
+            
+            files.forEach(function(file) {
+                const link = document.createElement("a");
+                link.href = `https://mathhelperbeta.py-things.com/games/${file}`;
+                link.download = file;
+                link.click();
+            });
         }
-
-    } catch (error) {
-        console.error(error);
-        document.getElementById("status").innerText = "❌ Error signing the contract.";
-    }
-}
-
     </script>
 
 </body>

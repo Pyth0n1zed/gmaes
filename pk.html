@@ -22,19 +22,15 @@
 
       const code = document.getElementById('productCode').value;
       
-      // Using CORS Anywhere proxy
-      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+      // Using an alternative proxy service: ThingProxy
+      const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
       const targetUrl = 'https://uhidk.fwh.is/validate.php';  // Replace with your actual PHP backend URL
       const fullUrl = proxyUrl + targetUrl;
-
-      // Replace with your actual API key
-      const apiKey = 'YOUR_API_KEY_HERE'; // Put your CORS Anywhere API key here
 
       fetch(fullUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': apiKey  // Include the API key in the headers
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ code: code })
       })

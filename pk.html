@@ -58,59 +58,41 @@
 </div>
 
 <script>
-  // Replace with your actual Turso endpoint and token
-  const endpoint = 'https://your-database-endpoint.turso.io'; // Example endpoint
-  const apiToken = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3Mzg5OTQ5MTcsImlkIjoiMWJiNzE0ZWQtYmJmZi00NDc5LWFlNzQtMTk1NjUwZDY5OGE3In0.1MuDluRhJ5E42JwGxHjoqNsXppBftdbzT2wu3rPWV6nwN5XQ2kkY7U3koTjDisydexcgG7I7xaW89kmB3HHJAg';
+  let validKeys = [
+    "X7#p8qZ3Bz",
+    "T1w@6mLr5Y",
+    "F!v9hPq8@X",
+    "Wb$3ZgR2iK",
+    "U3tP8d!mV6",
+    "K#1xJ8cQzN",
+    "R9oF@4lGzD",
+    "7sBzL1#2mT",
+    "I!hX9P0lRb",
+    "Jz$w6Q2rA5",
+    "T4n#V8iZ3Y",
+    "M1@fL6hJ9K",
+    "P2dB#q3oZ7",
+    "Y7zGmQ1!pL",
+    "C8wA3nF5X9",
+    "D#8oQ6zK0R",
+    "V4pFzJ1@8N",
+    "E3tL5gH#9Y",
+    "B2wZqT7!R0",
+    "H6xM1Yj9!L"
+  ];
 
-  async function validateKey() {
-    const productKey = document.getElementById('productKey').value.trim();
-    const errorMessage = document.getElementById('errorMessage');
-
-    // Clear any previous error messages
-    errorMessage.textContent = '';
-
-    if (!productKey) {
-      errorMessage.textContent = 'Please enter a product key.';
-      return;
+  function validateKey() {
+    let productKey = document.getElementById('productKey').value;
+    let errorMessage = document.getElementById('errorMessage');
+    
+    if (validKeys.includes(productKey)) {
+      errorMessage.textContent = "Product key is valid. Downloading file...";
+      errorMessage.style.color = "green";
+      // Add your download logic here, like triggering a file download
+    } else {
+      errorMessage.textContent = "Invalid product key. Please try again.";
+      errorMessage.style.color = "red";
     }
-
-    try {
-      // Send a POST request to the Turso API to query the product key
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiToken}`,
-        },
-        body: JSON.stringify({
-          query: `SELECT * FROM product_keys WHERE key = '${productKey}' AND valid = true`,
-        }),
-      });
-
-      // Parse the response
-      const data = await response.json();
-
-      if (!data || data.length === 0) {
-        errorMessage.textContent = 'Invalid product key.';
-        return;
-      }
-
-      // If the product key is valid, trigger the file download
-      downloadFile();
-    } catch (error) {
-      errorMessage.textContent = 'Error checking product key: ' + error.message;
-    }
-  }
-
-  function downloadFile() {
-    // Assuming the file URL is stored in the database or predefined
-    const fileUrl = 'https://example.com/yourfile.zip'; // Replace with actual file URL
-    const a = document.createElement('a');
-    a.href = fileUrl;
-    a.download = 'yourfile.zip'; // Set the file name for the download
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
   }
 </script>
 

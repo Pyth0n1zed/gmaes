@@ -68,13 +68,13 @@
     <p>
       By downloading these games, you agree to the following terms:
       <br>
-      <strong>Use of Games:</strong>You agree not to use or play them in class, during school hours, or in any educational setting. these are to play at home only.
+      <strong>Use of Games:</strong>You agree not to use or play them in class, during school hours, or in any educational setting. These are to play at home only.
       <br>
       <strong>Consequences of Violation:</strong> MB Games reserves the right to suspend or revoke access to the games if this rule is violated.
       <br>
       <strong>No distribution:</strong> Games may not be shared, sold, or distributed to other students.
       <br>
-      <strong>Modification of Terms:</strong>MB Games reserves the right to modify these terms at any time.
+      <strong>Modification of Terms:</strong> MB Games reserves the right to modify these terms at any time.
     </p>
     
     <input type="checkbox" id="tosAgree">
@@ -118,9 +118,15 @@
     }
     
     if (validKeys.includes(productKey)) {
-      errorMessage.textContent = "Valid key, redirecting...";
+      errorMessage.textContent = "Valid key, starting download...";
       errorMessage.style.color = "green";
-      window.location.href = "tos.html";
+      
+      // Trigger the file download
+      const fileUrl = "path_to_your_file/game.zip";  // Replace with your actual file URL or path
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "game.zip"; // Set the desired file name for download
+      link.click();
     } else {
       errorMessage.textContent = "Invalid product key. Please try again.";
       errorMessage.style.color = "red";

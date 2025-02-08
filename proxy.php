@@ -31,7 +31,7 @@ $code = $data['code'];
 
 // Construct the URL for your validation script.
 // IMPORTANT: Update the URL below to point to your actual validation script on InfinityFree.
-$validationUrl = 'https://your-infinityfree-site.com/validate_code.php?code=' . urlencode($code);
+$validationUrl = 'https://uhidk.fwh.is/validate.php?code=' . urlencode($code);
 
 // Use cURL to call the validation script
 $ch = curl_init();

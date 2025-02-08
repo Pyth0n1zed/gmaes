@@ -19,37 +19,27 @@
   <script>
     document.getElementById('validationForm').addEventListener('submit', function(event) {
       event.preventDefault(); // Prevent form submission
-      
+
       const code = document.getElementById('productCode').value;
       
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const targetUrl = 'https://uhidk.fwh.is/validate.php';
-    const fullUrl = proxyUrl + targetUrl;
-      
+      // Using Thingproxy as the proxy
+      const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
+      const targetUrl = 'https://uhidk.fwh.is/validate.php';  // Replace with your actual PHP backend URL
+      const fullUrl = proxyUrl + encodeURIComponent(targetUrl);
+
       fetch(fullUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ code: code })
       })
-      .then(response => {
-        console.log("HTTP Status:", response.status);
-        // Get the raw text response for debugging purposes
-        return response.text();
-      })
-      .then(text => {
-        console.log("Raw response text:", text);  // Check what is being returned
-        try {
-          const data = JSON.parse(text);
-          if (data.error) {
-            document.getElementById('result').textContent = 'Error: ' + data.error;
-          } else {
-            document.getElementById('result').textContent = data.message;
-          }
-        } catch (e) {
-          console.error("JSON parse error:", e);
-          document.getElementById('result').textContent = 'Error parsing response: ' + e;
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          document.getElementById('result').textContent = 'Error: ' + data.error;
+        } else {
+          document.getElementById('result').textContent = data.message;
         }
       })
       .catch(error => {

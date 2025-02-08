@@ -48,7 +48,7 @@
             }
 
             // Send the product code to the validate.php script
-            const response = await fetch("https://uhidk.fwh.is/htdocs/validate.php", {
+            const response = await fetch("https://uhidk.fwh.is/validate.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ code }),
